@@ -1,0 +1,92 @@
+전역 변수 failures는 0이고, 정수이다.
+함수 확인은 (condition: 참거짓, label: 문자열)를 받아
+    만약 condition == 거짓이면
+        failures는 failures + 1이다.
+        "FAIL: \(label)"를 출력한다.
+새경기(12345, 0).
+확인(run.qs.길이 == 9 그리고 run.students.길이 == 27, "8 questions / 27 students").
+변수 total는 0이다.
+변수 n는 1이다.
+n <= 8일 동안
+    total는 total + run.qs[n].pts이다.
+    상수 q는 run.qs[n]이다.
+    확인(q.n == n 그리고 q.page == (n - 1) / 4, "number and page").
+    확인(q.short == (n >= 7), "six multiple choice / two short answers").
+    확인(q.answer >= 1 그리고 q.answer <= 999, "answer range").
+    만약 q.short == 거짓이면
+        확인(q.answer <= 5, "multiple choice range").
+    확인(q.y + q.h < 638.0 그리고 q.h > 150.0, "question fits above navigation").
+    n는 n + 1이다.
+확인(total == 100, "100 points").
+시험시작().
+답마킹(1, 0, run.qs[1].answer).
+답마킹(7, 0, 1).
+답마킹(7, 2, 3).
+확인(마킹값(7) == -2, "short answer gap invalid").
+상수 initialScore는 채점()이다.
+확인(initialScore.marked == 2 그리고 initialScore.correct == 1, "invalid short answer counts as marked").
+촬영시작(2, run.t).
+run.t는 0.5이다.
+셔터누르기().
+확인(run.capture.active 그리고 run.pending.길이 == 0, "early tap leaves scan in progress").
+준비손떼기().
+확인(run.capture.active == 거짓 그리고 run.pending.길이 == 0 그리고 run.cancels == 1, "lifting early cancels preparation").
+run.t는 3.0이다.
+촬영시작(2, run.t).
+run.t는 run.capture.fs이다.
+촬영갱신().
+준비손떼기().
+확인(run.capture.active 그리고 run.pending.길이 == 0, "lifting at focus does not fire").
+셔터누르기().
+셔터누르기().
+확인(run.qual[0] == 1 그리고 run.pending.길이 == 1, "sharp capture").
+run.t는 run.pending[0].at이다.
+응답갱신().
+확인(run.hud.길이 == 1 그리고 run.pending.길이 == 0, "deliver pending once").
+확인(run.marks[6] == -1, "AI does not mark OMR").
+촬영시작(3, run.t).
+시점설정(1, 거짓).
+확인(run.capture.active == 거짓, "view switch cancels capture").
+시험끝().
+상수 oldMark는 run.marks[3]이다.
+답마킹(1, 0, 5).
+확인(run.marks[3] == oldMark, "end locks OMR").
+새경기(99, 1).
+확인(run.pending.길이 == 0 그리고 run.hud.길이 == 0 그리고 run.qual[0] == 0, "restart clears old round").
+시험시작().
+쪽넘기기(-1).
+확인(run.page == 0, "first page bound").
+쪽넘기기(1).
+쪽넘기기(1).
+확인(run.page == 1, "last page bound").
+변수 index는 1이다.
+index <= 8일 동안
+    상수 answer는 run.qs[index].answer이다.
+    만약 짧은문제(index)이면
+        답마킹(index, 2, answer % 10).
+        만약 answer >= 10이면
+            답마킹(index, 1, answer / 10 % 10).
+        만약 answer >= 100이면
+            답마킹(index, 0, answer / 100).
+    아니면
+        답마킹(index, 0, answer).
+    index는 index + 1이다.
+확인(채점().raw == 100 그리고 채점().correct == 8, "perfect eight-answer sheet").
+촬영시작(8, run.t).
+run.t는 run.capture.fs + 초점주기(run.dev) * 0.25이다.
+촬영갱신().
+확인(run.capture.active 그리고 run.pending.길이 == 0, "scan keeps focusing until shutter tap").
+셔터누르기().
+확인(run.qual[2] == 1 그리고 run.pending.길이 == 1, "off-center camera tap records shake").
+새경기(99, 1).
+시험시작().
+변수 frames는 0이다.
+frames < 299일 동안
+    경기시간진행(0.4).
+    run.sounds는 []이다.
+    frames는 frames + 1이다.
+확인(run.phase == 2, "still playing before two minutes").
+경기시간진행(0.41).
+확인(run.phase == 3 그리고 run.t == 120.0, "two minute deadline").
+확인(run.alarmDone 그리고 run.minuteWarning 그리고 run.lastWarning, "alarm and time broadcasts").
+"FAILURES=\(failures)"를 출력한다.

@@ -1,0 +1,768 @@
+기반을 가져온다.
+
+# 원본: 4d742f3 / 중급닌자시험/js/{core,exam,game}.js
+# 시점 0=정면 1=오른쪽 2=왼쪽 3=책상, 단계 0=메뉴 1=입실 2=시험 3=종료 4=적발 5=결과.
+구조체 문제의
+    변수 n은 정수이고,
+    변수 short는 참거짓이고,
+    변수 pts는 정수이고,
+    변수 answer는 정수이고,
+    변수 seed는 자연수이고,
+    변수 page는 정수이고,
+    변수 x는 실수이고,
+    변수 y는 실수이고,
+    변수 w는 실수이고,
+    변수 h는 실수이다.
+구조체 학생의
+    변수 x는 실수이고,
+    변수 z는 실수이고,
+    변수 col은 정수이고,
+    변수 hair는 정수이고,
+    변수 ph는 실수이고,
+    변수 sp는 실수이고,
+    변수 tilt는 실수이고,
+    변수 pace는 실수이고,
+    변수 stuck은 참거짓이다.
+구조체 경유지의
+    변수 x는 실수이고,
+    변수 z는 실수이고,
+    변수 pause는 실수이고,
+    변수 look은 실수이고,
+    변수 hasLook은 참거짓이다.
+구조체 감독관의
+    변수 x는 실수이고,
+    변수 z는 실수이고,
+    변수 heading은 실수이고,
+    변수 moving은 참거짓이고,
+    변수 walk는 실수이고,
+    변수 speed는 실수이고,
+    변수 state는 정수이고,
+    변수 route는 경유지의 배열이고,
+    변수 pauseUntil은 실수이고,
+    변수 lookHeading은 실수이고,
+    변수 hasLook은 참거짓이고,
+    변수 lastNode는 정수이고,
+    변수 timer는 실수이다.
+구조체 촬영의
+    변수 active는 참거짓이고,
+    변수 q는 정수이고,
+    변수 dev는 정수이고,
+    변수 press는 실수이고,
+    변수 fs는 실수이고,
+    변수 phase는 정수이고,
+    변수 inZone은 참거짓이고,
+    변수 release는 실수이고,
+    변수 quality는 정수이고,
+    변수 m은 실수이고,
+    변수 zone은 실수이다.
+구조체 응답예약의
+    변수 runId는 자연수이고,
+    변수 q는 정수이고,
+    변수 at는 실수이고,
+    변수 quality는 정수이다.
+구조체 알림의
+    변수 main은 문자열이고,
+    변수 sub는 문자열이고,
+    변수 quality는 정수이고,
+    변수 from은 실수이고,
+    변수 until은 실수이다.
+구조체 소리사건의
+    변수 kind는 정수이고,
+    변수 pan은 실수이고,
+    변수 volume은 실수이고,
+    변수 text는 문자열이다.
+구조체 경기의
+    변수 id는 자연수이고,
+    변수 rng는 자연수이고,
+    변수 dev는 정수이고,
+    변수 phase는 정수이고,
+    변수 clock은 실수이고,
+    변수 t는 실수이고,
+    변수 view는 정수이고,
+    변수 viewPrev는 정수이고,
+    변수 viewChangeAt은 실수이고,
+    변수 deskSince는 실수이고,
+    변수 page는 정수이고,
+    변수 qs는 문제의 배열이고,
+    변수 students는 학생의 배열이고,
+    변수 proctor는 감독관이고,
+    변수 marks는 정수 27개의 고정배열이고,
+    변수 freshQ는 정수이고,
+    변수 freshAt은 실수이고,
+    변수 capture는 촬영이고,
+    변수 after는 촬영이고,
+    변수 pending은 응답예약의 배열이고,
+    변수 hud는 알림의 배열이고,
+    변수 ear는 문자열이고,
+    변수 earUntil은 실수이고,
+    변수 suspicion은 실수이고,
+    변수 alarmAt은 실수이고,
+    변수 alarmUntil은 실수이고,
+    변수 alarmActive는 참거짓이고,
+    변수 alarmDone은 참거짓이고,
+    변수 minuteWarning은 참거짓이고,
+    변수 lastWarning은 참거짓이고,
+    변수 banner는 문자열이고,
+    변수 bannerWho는 문자열이고,
+    변수 bannerFrom은 실수이고,
+    변수 bannerUntil은 실수이고,
+    변수 qual은 정수 3개의 고정배열이고,
+    변수 cancels는 정수이고,
+    변수 pencilAt은 실수이고,
+    변수 pageAt은 실수이고,
+    변수 resultAt은 실수이고,
+    변수 caughtFlag는 참거짓이고,
+    변수 caughtAt은 실수이고,
+    변수 sounds는 소리사건의 배열이다.
+전역 변수 run은 경기이다.
+전역 상수 문항수는 8이고, 정수이다.
+전역 상수 쪽수는 2이고, 정수이다.
+전역 상수 시험시간은 120.0이고, 실수이다.
+전역 상수 PI는 3.141592653589793이고, 실수이다.
+전역 상수 TAU는 6.283185307179586이고, 실수이다.
+
+함수 제한은 (v: 실수, a: 실수, b: 실수)를 받아
+    만약 v < a이면
+        a를 실수로 반환한다.
+    만약 v > b이면
+        b를 실수로 반환한다.
+    v를 실수로 반환한다.
+함수 절댓값은 (v: 실수)를 받아
+    만약 v < 0.0이면
+        (0.0 - v)를 실수로 반환한다.
+    v를 실수로 반환한다.
+함수 거리값은 (x: 실수, z: 실수)를 받아
+    제곱근(x * x + z * z)를 실수로 반환한다.
+함수 보간은 (a: 실수, b: 실수, k: 실수)를 받아
+    (a + (b - a) * k)를 실수로 반환한다.
+함수 부드럽게는 (k: 실수)를 받아
+    (k * k * (3.0 - 2.0 * k))를 실수로 반환한다.
+함수 진행은 (t: 실수, a: 실수, b: 실수)를 받아
+    제한((t - a) / (b - a), 0.0, 1.0)를 실수로 반환한다.
+함수 난수는
+    # Mulberry32: JS Math.imul의 낮은 32비트를 명시적으로 보존한다.
+    run.rng는 (run.rng + 자연수(0x6D2B79F5)) & 자연수(0xffffffff)이다.
+    변수 v는 ((run.rng ^ (run.rng >> 15)) * (run.rng | 1)) & 자연수(0xffffffff)이고, 자연수이다.
+    v는 (v ^ ((v + (((v ^ (v >> 7)) * (v | 61)) & 자연수(0xffffffff))) & 자연수(0xffffffff))) & 자연수(0xffffffff)이다.
+    (실수((v ^ (v >> 14)) & 자연수(0xffffffff)) / 4294967296.0)를 실수로 반환한다.
+함수 임의정수는 (n: 정수)를 받아
+    정수(난수() * 실수(n))를 정수로 반환한다.
+함수 짧은문제는 (n: 정수)를 받아
+    (n >= 7)를 참거짓으로 반환한다.
+함수 배점은 (n: 정수)를 받아
+    만약 n <= 4이면
+        12를 정수로 반환한다.
+    13을 정수로 반환한다.
+함수 문제만들기는 (seed: 자연수)를 받아
+    상수 saved는 run.rng이다.
+    run.rng는 seed이다.
+    변수 qs는 [문제()]이고, 문제의 배열이다.
+    변수 n은 1이다.
+    n <= 문항수일 동안
+        변수 q는 문제(n: n, short: 짧은문제(n), pts: 배점(n), page: (n - 1) / 4)이다.
+        변수 범위는 5이다.
+        만약 q.short이면
+            범위는 999이다.
+        q.answer는 1 + 임의정수(범위)이다.
+        q.seed는 자연수(난수() * 1000000000.0)이다.
+        상수 p는 q.page이다.
+        상수 ci는 (n - 1) % 4 / 2이다.
+        상수 row는 (n - 1) % 2이다.
+        변수 top은 100.0이다.
+        만약 p == 0이면
+            top은 206.0이다.
+        만약 (ci == 0 그리고 p == 0) 또는 (ci == 1 그리고 p == 1)이면
+            top은 top + 30.0이다.
+        상수 each는 (638.0 - top) / 2.0이다.
+        q.x는 183.0 + 실수(ci) * 318.0이다.
+        q.y는 top + 실수(row) * each이다.
+        q.w는 286.0이다.
+        q.h는 each - 10.0이다.
+        qs에 q를 추가한다.
+        n은 n + 1이다.
+    run.rng는 saved이다.
+    qs를 문제의 배열로 반환한다.
+함수 학생만들기는 (seed: 자연수)를 받아
+    상수 saved는 run.rng이다.
+    run.rng는 seed이다.
+    변수 out은 학생의 배열이다.
+    상수 xs는 [-0.9, 0.0, 1.5, 2.4]이다.
+    변수 r은 1이다.
+    r <= 7일 동안
+        변수 c는 0이다.
+        c < 4일 동안
+            만약 r != 5 또는 c != 1이면
+                변수 s는 학생()이다.
+                s.x는 xs[c] + (난수() - 0.5) * 0.06이다.
+                s.z는 실수(5 - r)이다.
+                s.col은 임의정수(7)이다.
+                s.hair는 임의정수(5)이다.
+                s.ph는 난수() * TAU이다.
+                s.sp는 1.2 + 난수() * 2.2이다.
+                s.tilt는 (난수() - 0.5) * 0.25이다.
+                s.pace는 0.4 + 난수() * 0.9이다.
+                s.stuck은 난수() < 0.2이다.
+                out에 s를 추가한다.
+            c는 c + 1이다.
+        r은 r + 1이다.
+    run.rng는 saved이다.
+    out을 학생의 배열로 반환한다.
+함수 소리는 (kind: 정수, pan: 실수, volume: 실수, text: 문자열)를 받아
+    run.sounds에 소리사건(kind: kind, pan: pan, volume: volume, text: text)를 추가한다.
+함수 방송은 (text: 문자열, dur: 실수)를 받아
+    run.banner는 text이다.
+    run.bannerWho는 "교내 방송"이다.
+    run.bannerFrom은 run.clock이다.
+    run.bannerUntil은 run.clock + dur이다.
+    소리(20, 0.0, 0.9, text).
+함수 새감독관은
+    감독관(x: -1.7, z: 4.75, heading: PI / 2.0, speed: 0.7, lastNode: 0)를 감독관으로 반환한다.
+함수 새경기는 (seed: 자연수, dev: 정수)를 받아
+    run은 경기(id: seed, rng: seed, dev: dev, phase: 1, viewChangeAt: -9.0, pageAt: 3.0)이다.
+    변수 i는 0이다.
+    i < 정수(run.marks.길이)일 동안
+        run.marks[i]는 -1이다.
+        i는 i + 1이다.
+    run.qs는 문제만들기(seed)이다.
+    run.students는 학생만들기(seed % 997)이다.
+    run.proctor는 새감독관()이다.
+    run.proctor.state는 1이다.
+    run.proctor.route에 경유지(x: 0.75, z: 4.75)를 추가한다.
+    run.proctor.route에 경유지(x: 1.0, z: 5.5, pause: 99.0, look: PI, hasLook: 참)를 추가한다.
+    run.alarmAt은 42.0 + 난수() * 12.0이다.
+    방송("2교시 수학 영역 준비령입니다.", 7.5).
+함수 노출취소는 (silent: 참거짓)를 받아
+    만약 run.capture.active == 거짓이면
+        반환한다.
+    run.capture.active는 거짓이다.
+    만약 silent == 거짓이면
+        run.cancels는 run.cancels + 1이다.
+        소리(8, 0.0, 1.0, "").
+함수 시점설정은 (v: 정수, force: 참거짓)를 받아
+    만약 v == run.view 또는 (force == 거짓 그리고 run.phase != 2)이면
+        반환한다.
+    노출취소(거짓).
+    run.viewPrev는 run.view이다.
+    run.view는 v이다.
+    run.viewChangeAt은 run.clock이다.
+    만약 v == 3이면
+        run.deskSince는 run.t이다.
+함수 시험시작은
+    run.phase는 2이다.
+    run.t는 0.0이다.
+    소리(3, 0.0, 1.0, "").
+    방송("본령입니다. 시험을 시작합니다.", 3.5).
+    시점설정(3, 참).
+    run.proctor.state는 0이다.
+    run.proctor.route는 []이다.
+    run.proctor.pauseUntil은 run.clock + 1.5이다.
+함수 시험끝은
+    run.phase는 3이다.
+    run.t는 시험시간이다.
+    노출취소(참).
+    run.after.active는 거짓이다.
+    run.pending는 []이다.
+    run.hud는 []이다.
+    소리(21, 0.0, 0.0, "").
+    소리(4, 0.0, 1.0, "").
+    방송("시험이 끝났습니다. 필기구를 내려놓으십시오.", 3.5).
+    run.resultAt은 run.clock + 3.6이다.
+함수 적발은
+    run.phase는 4이다.
+    run.caughtFlag는 참이다.
+    run.caughtAt은 run.t이다.
+    노출취소(참).
+    run.after.active는 거짓이다.
+    run.pending는 []이다.
+    run.hud는 []이다.
+    소리(22, 0.0, 0.0, "").
+    run.banner는 "잠깐, 손에 있는 것 좀 봅시다."이다.
+    run.bannerWho는 "감독관"이다.
+    run.bannerFrom은 run.clock이다.
+    run.bannerUntil은 run.clock + 3.0이다.
+    시점설정(0, 참).
+    run.resultAt은 run.clock + 2.8이다.
+함수 가까운통로는 (x: 실수)를 받아
+    상수 xs는 [-1.7, 0.75, 3.2]이다.
+    변수 best는 xs[0]이다.
+    xs의 각 v에 대해
+        만약 절댓값(v - x) < 절댓값(best - x)이면
+            best는 v이다.
+    best를 실수로 반환한다.
+함수 경로는 (p: 감독관, x: 실수, z: 실수)를 받아
+    상수 ax는 가까운통로(p.x)이다.
+    상수 bx는 가까운통로(x)이다.
+    변수 out은 경유지의 배열이다.
+    만약 ax == bx 그리고 절댓값(p.x - ax) < 0.3 그리고 절댓값(x - bx) < 0.3 그리고 z < 4.85 그리고 p.z < 4.85이면
+        out에 경유지(x: x, z: z)를 추가한다.
+        out을 경유지의 배열로 반환한다.
+    변수 rz는 -2.6이다.
+    만약 절댓값(p.z - 4.75) + 절댓값(z - 4.75) <= 절댓값(p.z + 2.6) + 절댓값(z + 2.6)이면
+        rz는 4.75이다.
+    out에 경유지(x: ax, z: rz)를 추가한다.
+    out에 경유지(x: bx, z: rz)를 추가한다.
+    out에 경유지(x: x, z: z)를 추가한다.
+    out을 경유지의 배열로 반환한다.
+함수 방향돌리기는 (p: 감독관, target: 실수, rate: 실수)를 받아
+    변수 out은 p이다.
+    변수 d는 target - p.heading + PI * 3.0이다.
+    d >= TAU일 동안
+        d는 d - TAU이다.
+    d < 0.0일 동안
+        d는 d + TAU이다.
+    d는 d - PI이다.
+    out.heading은 p.heading + 제한(d, 0.0 - rate, rate)이다.
+    out을 감독관으로 반환한다.
+함수 감독관걷기는 (dt: 실수)를 받아
+    변수 p는 run.proctor이다.
+    만약 p.pauseUntil > run.clock이면
+        p.moving은 거짓이다.
+        만약 p.hasLook이면
+            p는 방향돌리기(p, p.lookHeading, 3.0 * dt)이다.
+        run.proctor는 p이다.
+        0을 정수로 반환한다.
+    만약 p.route.길이 == 0이면
+        run.proctor.moving은 거짓이다.
+        1을 정수로 반환한다.
+    상수 wp는 p.route[0]이다.
+    상수 dx는 wp.x - p.x이다.
+    상수 dz는 wp.z - p.z이다.
+    상수 d는 거리값(dx, dz)이다.
+    만약 d < 0.03이면
+        변수 rest는 경유지의 배열이다.
+        변수 i는 1이다.
+        i < 정수(p.route.길이)일 동안
+            rest에 p.route[i]를 추가한다.
+            i는 i + 1이다.
+        p.route는 rest이다.
+        만약 wp.pause > 0.0이면
+            p.pauseUntil은 run.clock + wp.pause이다.
+            p.lookHeading은 wp.look이다.
+            p.hasLook은 wp.hasLook이다.
+        run.proctor는 p이다.
+        2를 정수로 반환한다.
+    상수 step은 제한(p.speed * dt, 0.0, d)이다.
+    p.x는 p.x + dx / d * step이다.
+    p.z는 p.z + dz / d * step이다.
+    p.moving은 참이다.
+    p는 방향돌리기(p, 아크탄젠트2(dx, dz), 6.0 * dt)이다.
+    상수 prev는 사인(p.walk)이다.
+    p.walk는 p.walk + dt * p.speed * 9.0이다.
+    만약 (prev < 0.0) != (사인(p.walk) < 0.0)이면
+        변수 yaw는 0.0이다.
+        만약 run.view == 1이면
+            yaw는 1.05이다.
+        그렇지 않고 run.view == 2이면
+            yaw는 -1.05이다.
+        소리(0, 사인(아크탄젠트2(p.x, p.z) - yaw), 제한(1.6 / (거리값(p.x, p.z) + 0.6), 0.08, 1.0), "").
+    run.proctor는 p이다.
+    3을 정수로 반환한다.
+함수 순회계획은
+    상수 xs는 [-1.7, 0.75, 3.2, -1.7, 0.75, 3.2, 1.0, -1.7, 0.75, 3.2]이다.
+    상수 zs는 [4.75, 4.75, 4.75, -2.6, -2.6, -2.6, 5.5, 1.2, 2.2, 0.8]이다.
+    변수 key는 임의정수(9)이다.
+    만약 key >= run.proctor.lastNode이면
+        key는 key + 1이다.
+    run.proctor.lastNode는 key이다.
+    변수 pts는 경로(run.proctor, xs[key], zs[key])이다.
+    만약 난수() < 0.5이면
+        변수 px는 run.proctor.x이다.
+        변수 pz는 run.proctor.z이다.
+        변수 inserted는 거짓이다.
+        변수 next는 경유지의 배열이다.
+        pts의 각 b에 대해
+            만약 inserted == 거짓 그리고 절댓값(px - b.x) < 0.05 그리고 절댓값(pz - b.z) > 2.0이면
+                상수 mid는 보간(pz, b.z, 0.3 + 난수() * 0.4)이다.
+                상수 pause는 1.5 + 난수() * 2.5이다.
+                상수 looks는 [PI / 2.0, 0.0 - PI / 2.0, PI, 0.0]이다.
+                next에 경유지(x: px, z: mid, pause: pause, look: looks[임의정수(4)], hasLook: 참)를 추가한다.
+                inserted는 참이다.
+            next에 b를 추가한다.
+            px는 b.x이다.
+            pz는 b.z이다.
+        pts는 next이다.
+    상수 last는 정수(pts.길이) - 1이다.
+    pts[last].pause는 1.0 + 난수() * 3.0이다.
+    pts[last].look은 아크탄젠트2(0.75 - pts[last].x, 1.2 - pts[last].z)이다.
+    pts[last].hasLook은 참이다.
+    run.proctor.route는 pts이다.
+    run.proctor.speed는 0.7이다.
+함수 긴장도는
+    제한((3.6 - 거리값(run.proctor.x, run.proctor.z)) / 2.4, 0.0, 1.0)를 실수로 반환한다.
+함수 시선판정은
+    상수 p는 run.proctor이다.
+    상수 vx는 0.0 - p.x이다.
+    상수 vz는 0.0 - p.z이다.
+    변수 d는 거리값(vx, vz)이다.
+    만약 d == 0.0이면
+        d는 1.0이다.
+    상수 cos는 (사인(p.heading) * vx + 코사인(p.heading) * vz) / d이다.
+    만약 d > 7.0 또는 cos < 0.55이면
+        0.0을 실수로 반환한다.
+    변수 blockers는 0이다.
+    만약 d > 1.5이면
+        run.students의 각 s에 대해
+            상수 u는 ((s.x - p.x) * vx + (s.z - p.z) * vz) / (d * d)이다.
+            만약 u > 0.05 그리고 u < 0.8 그리고 거리값(s.x - p.x - vx * u, s.z - p.z - vz * u) < 0.32이면
+                blockers는 blockers + 1이다.
+    변수 shade는 1.0이다.
+    만약 blockers >= 2이면
+        shade는 0.36이다.
+    그렇지 않고 blockers == 1이면
+        shade는 0.6이다.
+    (shade * 제한(1.6 - d / 5.0, 0.35, 1.3))를 실수로 반환한다.
+함수 노출중은
+    변수 dur는 0.25이다.
+    만약 run.after.dev == 1이면
+        dur는 0.7이다.
+    (run.capture.active 또는 (run.after.active 그리고 run.t < run.after.release + dur))를 참거짓으로 반환한다.
+함수 감독관갱신은 (dt: 실수)를 받아
+    만약 run.phase == 4이면
+        run.proctor.moving은 거짓이다.
+        run.proctor는 방향돌리기(run.proctor, 아크탄젠트2(0.0 - run.proctor.x, 0.0 - run.proctor.z), 4.0 * dt)이다.
+        반환한다.
+    만약 run.proctor.state == 1이면
+        상수 ignored는 감독관걷기(dt)이다.
+        반환한다.
+    상수 sees는 시선판정()이다.
+    상수 exposing는 노출중()이다.
+    만약 run.phase == 2이면
+        변수 rate는 -9.0이다.
+        만약 exposing이면
+            rate는 -2.0이다.
+            만약 sees > 0.0이면
+                변수 vis는 0.8이다.
+                만약 run.dev == 1이면
+                    vis는 1.15이다.
+                rate는 42.0 * vis * sees이다.
+                만약 run.alarmActive이면
+                    rate는 rate * 0.5이다.
+        그렇지 않고 run.view != 3 그리고 sees > 0.0 그리고 거리값(run.proctor.x, run.proctor.z) < 3.5이면
+            rate는 6.0이다.
+        run.suspicion은 제한(run.suspicion + rate * dt, 0.0, 100.0)이다.
+    상수 s는 run.suspicion이다.
+    상수 state는 run.proctor.state이다.
+    만약 state == 0 또는 state == 2이면
+        만약 state == 0 그리고 s >= 30.0 그리고 sees > 0.0 그리고 run.phase == 2이면
+            run.proctor.state는 3이다.
+            run.proctor.timer는 run.clock이다.
+            run.proctor.route는 []이다.
+            run.proctor.pauseUntil은 0.0이다.
+        그렇지 않고 감독관걷기(dt) == 1이면
+            run.proctor.state는 0이다.
+            순회계획().
+    그렇지 않고 state == 3이면
+        run.proctor.moving은 거짓이다.
+        run.proctor는 방향돌리기(run.proctor, 아크탄젠트2(0.0 - run.proctor.x, 0.0 - run.proctor.z), 3.0 * dt)이다.
+        만약 s >= 70.0이면
+            run.proctor.state는 4이다.
+            run.proctor.speed는 0.95이다.
+            run.proctor.pauseUntil은 0.0이다.
+            run.proctor.route는 경로(run.proctor, 0.75, 1.0)이다.
+        그렇지 않고 s < 18.0 그리고 run.clock - run.proctor.timer > 2.5이면
+            run.proctor.state는 0이다.
+            run.proctor.route는 []이다.
+    그렇지 않고 state == 4이면
+        만약 s < 25.0이면
+            run.proctor.state는 0이다.
+            run.proctor.route는 []이다.
+        그렇지 않고 감독관걷기(dt) == 1이면
+            run.proctor.state는 5이다.
+            run.proctor.timer는 run.clock이다.
+    그렇지 않고 state == 5이면
+        run.proctor.moving은 거짓이다.
+        run.proctor는 방향돌리기(run.proctor, 아크탄젠트2(0.0 - run.proctor.x, 0.0 - run.proctor.z), 4.0 * dt)이다.
+        만약 run.phase == 2 그리고 (exposing 또는 s >= 92.0)이면
+            적발().
+        그렇지 않고 run.clock - run.proctor.timer > 2.4이면
+            run.suspicion은 제한(s, 0.0, 15.0)이다.
+            run.proctor.state는 0이다.
+            run.proctor.route는 []이다.
+            run.proctor.pauseUntil은 run.clock + 0.6이다.
+함수 경보시작은
+    run.alarmActive는 참이다.
+    run.alarmUntil은 run.t + 6.0이다.
+    소리(5, 0.0, 1.0, "").
+    만약 run.proctor.state != 5이면
+        run.proctor.state는 2이다.
+        run.proctor.speed는 0.85이다.
+        run.proctor.pauseUntil은 0.0이다.
+        run.proctor.route는 경로(run.proctor, 3.25, 4.9)이다.
+        상수 last는 정수(run.proctor.route.길이) - 1이다.
+        run.proctor.route[last].pause는 7.0이다.
+        run.proctor.route[last].look은 PI / 2.0이다.
+        run.proctor.route[last].hasLook은 참이다.
+함수 접근시간은 (dev: 정수)를 받아
+    만약 dev == 1이면
+        2.5를 실수로 반환한다.
+    1.0을 실수로 반환한다.
+함수 초점주기는 (dev: 정수)를 받아
+    만약 dev == 1이면
+        1.5를 실수로 반환한다.
+    1.2를 실수로 반환한다.
+함수 초점위치는 (c: 촬영, t: 실수)를 받아
+    사인(TAU * (t - c.fs) / 초점주기(c.dev))를 실수로 반환한다.
+함수 선명구간은 (c: 촬영)를 받아
+    변수 zone는 0.15이다.
+    만약 c.dev == 1이면
+        zone는 0.4이다.
+    zone는 zone * (1.0 - 0.45 * 긴장도())이다.
+    만약 c.dev == 0 그리고 run.t - run.deskSince < 1.6이면
+        zone는 zone * 0.55이다.
+    zone를 실수로 반환한다.
+함수 촬영시작은 (n: 정수, press: 실수)를 받아
+    만약 run.phase != 2 또는 run.view != 3 또는 run.capture.active 또는 n < 1 또는 n > 문항수이면
+        반환한다.
+    run.capture는 촬영(active: 참, q: n, dev: run.dev, press: press, fs: press + 접근시간(run.dev))이다.
+    run.after.active는 거짓이다.
+함수 준비손떼기는
+    만약 run.capture.active 그리고 run.t < run.capture.fs이면
+        노출취소(거짓).
+함수 셔터누르기는
+    상수 c는 run.capture이다.
+    만약 c.active == 거짓 또는 run.t < c.fs이면
+        반환한다.
+    상수 m는 초점위치(c, run.t)이다.
+    상수 z는 선명구간(c)이다.
+    변수 quality는 2이다.
+    만약 절댓값(m) <= z이면
+        quality는 0이다.
+    그렇지 않고 절댓값(m) <= z + 0.4이면
+        quality는 1이다.
+    run.capture.active는 거짓이다.
+    run.after는 c이다.
+    run.after.release는 run.t이다.
+    run.after.quality는 quality이다.
+    run.after.m는 m이다.
+    run.after.zone는 z이다.
+    run.qual[quality]는 run.qual[quality] + 1이다.
+    소리(6, 0.0, 실수(c.dev), "").
+    상수 delays는 [2.0, 5.0, 4.0]이다.
+    run.pending에 응답예약(runId: run.id, q: c.q, at: run.t + delays[quality] + (난수() - 0.5) * 0.6, quality: quality)를 추가한다.
+함수 촬영갱신은
+    만약 run.capture.active이면
+        만약 run.capture.phase == 0 그리고 run.t >= run.capture.fs이면
+            run.capture.phase는 1이다.
+        만약 run.capture.phase == 1이면
+            상수 inZone는 절댓값(초점위치(run.capture, run.t)) <= 선명구간(run.capture)이다.
+            만약 inZone 그리고 run.capture.inZone == 거짓 그리고 run.capture.dev == 1이면
+                소리(7, 0.6, 1.0, "").
+            run.capture.inZone는 inZone이다.
+    만약 run.after.active 그리고 run.t > run.after.release + 1.6이면
+        run.after.active는 거짓이다.
+함수 한글숫자는 (n: 정수)를 받아
+    상수 ds는 ["", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"]이다.
+    상수 h는 n / 100이다.
+    상수 t는 n / 10 % 10이다.
+    상수 o는 n % 10이다.
+    변수 s는 ""이다.
+    만약 h > 0이면
+        만약 h != 1이면
+            s에 ds[h]를 붙인다.
+        s에 "백"을 붙인다.
+    만약 t > 0이면
+        만약 t != 1이면
+            s에 ds[t]를 붙인다.
+        s에 "십"을 붙인다.
+    만약 o > 0이면
+        s에 ds[o]를 붙인다.
+    만약 n == 0이면
+        s는 "영"이다.
+    s를 문자열로 반환한다.
+함수 답표기는 (q: 문제, v: 정수)를 받아
+    만약 q.short이면
+        문자열로만들기(v)를 문자열로 반환한다.
+    상수 cir는 ["", "①", "②", "③", "④", "⑤"]이다.
+    cir[v]를 문자열로 반환한다.
+함수 답음성은 (q: 문제, v: 정수)를 받아
+    만약 q.short이면
+        한글숫자(v)를 문자열로 반환한다.
+    "\(한글숫자(v)) 번"을 문자열로 반환한다.
+함수 대체답은 (q: 문제)를 받아
+    만약 q.short == 거짓이면
+        변수 v는 1 + 임의정수(5)이다.
+        v == q.answer일 동안
+            v는 1 + 임의정수(5)이다.
+        v를 정수로 반환한다.
+    변수 digits는 1이다.
+    만약 q.answer >= 100이면
+        digits는 3이다.
+    그렇지 않고 q.answer >= 10이면
+        digits는 2이다.
+    변수 i는 0이다.
+    i < 40일 동안
+        상수 pos는 임의정수(digits)이다.
+        변수 pow는 1이다.
+        변수 p는 0이다.
+        p < digits - pos - 1일 동안
+            pow는 pow * 10이다.
+            p는 p + 1이다.
+        상수 v는 q.answer - (q.answer / pow % 10) * pow + 임의정수(10) * pow이다.
+        변수 lower는 1이다.
+        만약 digits == 2이면
+            lower는 10이다.
+        그렇지 않고 digits == 3이면
+            lower는 100이다.
+        만약 v != q.answer 그리고 v >= lower 그리고 v <= 999이면
+            v를 정수로 반환한다.
+        i는 i + 1이다.
+    만약 q.answer == 999이면
+        998을 정수로 반환한다.
+    (q.answer + 1)을 정수로 반환한다.
+함수 응답전달은 (p: 응답예약)를 받아
+    상수 q는 run.qs[p.q]이다.
+    변수 main는 "\(q.n)번 · 판독 불가"이다.
+    변수 sub는 "다시 촬영하세요"이다.
+    변수 speech는 "\(한글숫자(q.n)) 번, 판독 불가. 다시 촬영하세요"이다.
+    만약 p.quality == 0이면
+        main는 "\(q.n)번 · \(답표기(q, q.answer))"이다.
+        sub는 ""이다.
+        speech는 "\(한글숫자(q.n)) 번, \(답음성(q, q.answer))"이다.
+    그렇지 않고 p.quality == 1이면
+        상수 alt는 대체답(q)이다.
+        변수 a는 q.answer이다.
+        변수 b는 alt이다.
+        만약 난수() >= 0.5이면
+            a는 alt이다.
+            b는 q.answer이다.
+        main는 "\(q.n)번 · \(답표기(q, a)) 또는 \(답표기(q, b))"이다.
+        sub는 "흐림 판독 · 후보 두 개"이다.
+        speech는 "\(한글숫자(q.n)) 번, \(답음성(q, a)) 또는 \(답음성(q, b))"이다.
+    만약 run.dev == 0이면
+        변수 dur는 6.0이다.
+        만약 p.quality == 0이면
+            dur는 4.5이다.
+        run.hud에 알림(main: main, sub: sub, quality: p.quality, from: run.t, until: run.t + dur)를 추가한다.
+        만약 run.hud.길이 > 3이면
+            변수 tail는 알림의 배열이다.
+            변수 i는 1이다.
+            i < 정수(run.hud.길이)일 동안
+                tail에 run.hud[i]를 추가한다.
+                i는 i + 1이다.
+            run.hud는 tail이다.
+    아니면
+        run.ear는 speech이다.
+        run.earUntil은 run.t + 3.0이다.
+        소리(23, 0.0, 1.0, speech).
+함수 응답갱신은
+    변수 next는 응답예약의 배열이다.
+    run.pending의 각 p에 대해
+        만약 p.runId == run.id이면
+            만약 p.at <= run.t이면
+                응답전달(p).
+            아니면
+                next에 p를 추가한다.
+    run.pending는 next이다.
+    변수 hud는 알림의 배열이다.
+    run.hud의 각 h에 대해
+        만약 h.until > run.t이면
+            hud에 h를 추가한다.
+    run.hud는 hud이다.
+함수 답마킹은 (n: 정수, place: 정수, value: 정수)를 받아
+    만약 run.phase != 2 또는 run.t >= 시험시간 또는 n < 1 또는 n > 문항수이면
+        반환한다.
+    상수 i는 n * 3 + place이다.
+    만약 run.marks[i] == value이면
+        run.marks[i]는 -1이다.
+    아니면
+        run.marks[i]는 value이다.
+    run.freshQ는 n이다.
+    run.freshAt은 run.t이다.
+    소리(9, 0.0, 1.0, "").
+함수 마킹값은 (n: 정수)를 받아
+    만약 run.qs[n].short == 거짓이면
+        run.marks[n * 3]를 정수로 반환한다.
+    변수 v는 0이다.
+    변수 marked는 거짓이다.
+    변수 p는 0이다.
+    p < 3일 동안
+        상수 d는 run.marks[n * 3 + p]이다.
+        만약 d < 0 그리고 marked이면
+            -2를 정수로 반환한다.
+        v는 v * 10이다.
+        만약 d >= 0이면
+            v는 v + d이다.
+            marked는 참이다.
+        p는 p + 1이다.
+    만약 marked == 거짓이면
+        -1을 정수로 반환한다.
+    v를 정수로 반환한다.
+구조체 채점결과의
+    변수 marked는 정수이고,
+    변수 correct는 정수이고,
+    변수 raw는 정수이다.
+함수 채점은
+    변수 s는 채점결과()이다.
+    변수 n은 1이다.
+    n <= 문항수일 동안
+        상수 v는 마킹값(n)이다.
+        만약 v != -1이면
+            s.marked는 s.marked + 1이다.
+            만약 v == run.qs[n].answer이면
+                s.correct는 s.correct + 1이다.
+                s.raw는 s.raw + run.qs[n].pts이다.
+        n은 n + 1이다.
+    s를 채점결과로 반환한다.
+함수 학생소리갱신은
+    만약 run.alarmActive 또는 run.phase != 2이면
+        반환한다.
+    만약 run.clock > run.pencilAt이면
+        상수 s는 run.students[임의정수(정수(run.students.길이))]이다.
+        만약 s.stuck == 거짓이면
+            변수 yaw는 0.0이다.
+            만약 run.view == 1이면
+                yaw는 1.05이다.
+            그렇지 않고 run.view == 2이면
+                yaw는 -1.05이다.
+            소리(1, 사인(아크탄젠트2(s.x, s.z) - yaw), 제한(0.9 / (거리값(s.x, s.z) + 0.4), 0.05, 0.6), "").
+        run.pencilAt은 run.clock + 0.12 + 난수() * 0.4이다.
+    만약 run.clock > run.pageAt이면
+        상수 s는 run.students[임의정수(정수(run.students.길이))]이다.
+        소리(2, 사인(아크탄젠트2(s.x, s.z)), 제한(1.0 / (거리값(s.x, s.z) + 0.5), 0.1, 0.7), "").
+        run.pageAt은 run.clock + 4.0 + 난수() * 9.0이다.
+함수 쪽넘기기는 (delta: 정수)를 받아
+    만약 run.phase != 2 또는 run.view != 3 또는 run.capture.active이면
+        반환한다.
+    상수 p는 정수(제한(실수(run.page + delta), 0.0, 실수(쪽수 - 1)))이다.
+    만약 p != run.page이면
+        run.page는 p이다.
+        소리(2, 0.0, 0.5, "").
+함수 경기갱신은 (dt: 실수)를 받아
+    run.clock은 run.clock + dt이다.
+    만약 run.phase == 1이면
+        감독관갱신(dt).
+        만약 run.clock >= 7.5이면
+            시험시작().
+        반환한다.
+    만약 run.phase == 2이면
+        run.t는 run.t + dt이다.
+        만약 run.minuteWarning == 거짓 그리고 run.t >= 시험시간 - 60.0이면
+            run.minuteWarning는 참이다.
+            방송("시험 종료 1분 전입니다.", 4.5).
+        만약 run.lastWarning == 거짓 그리고 run.t >= 시험시간 - 15.0이면
+            run.lastWarning는 참이다.
+            방송("시험 종료 15초 전입니다.", 4.5).
+        만약 run.alarmDone == 거짓 그리고 run.t >= run.alarmAt이면
+            run.alarmDone는 참이다.
+            경보시작().
+        만약 run.alarmActive 그리고 run.t >= run.alarmUntil이면
+            run.alarmActive는 거짓이다.
+        촬영갱신().
+        응답갱신().
+        감독관갱신(dt).
+        학생소리갱신().
+        만약 run.t >= 시험시간이면
+            시험끝().
+        반환한다.
+    감독관갱신(dt).
+    만약 (run.phase == 3 또는 run.phase == 4) 그리고 run.clock >= run.resultAt이면
+        run.phase는 5이다.
+
+
+# 느린 프레임에서도 실제 경과 시간을 모두 반영하고 감독관의 이동 판정은 작은 간격으로 갱신한다.
+함수 경기시간진행은 (elapsed: 실수)를 받아
+    변수 left는 elapsed이다.
+    left > 0.0 그리고 run.phase > 0 그리고 run.phase < 5일 동안
+        상수 step은 제한(left, 0.0, 0.1)이다.
+        경기갱신(step).
+        left는 left - step이다.

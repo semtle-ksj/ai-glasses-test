@@ -1,0 +1,200 @@
+HmjeUI를 가져온다.
+HmjeGraphics를 가져온다.
+
+# 모든 도형은 원본과 같은 1280×720 좌표. 배율과 이동은 입력에도 역으로 적용한다.
+전역 변수 G는 그래픽만들기(0, 0)이고, 그래픽이다.
+전역 변수 scale는 1.0이고, 실수이다.
+전역 변수 tx는 0.0이고, 실수이다.
+전역 변수 ty는 0.0이고, 실수이다.
+전역 변수 fontWeight는 500이고, 정수이다.
+전역 변수 fonts는 폰트의 배열이다.
+전역 변수 fontSizes는 정수의 배열이다.
+전역 변수 selectedDevice는 0이고, 정수이다.
+전역 변수 muted는 거짓이고, 참거짓이다.
+전역 변수 pointerX는 -1.0이고, 실수이다.
+전역 변수 pointerY는 -1.0이고, 실수이다.
+전역 변수 touchMode는 거짓이고, 참거짓이다.
+전역 변수 US는 1.0이고, 실수이다.
+전역 변수 zoomX는 0.0이고, 실수이다.
+전역 변수 zoomY는 0.0이고, 실수이다.
+전역 변수 zoomScale는 1.0이고, 실수이다.
+전역 변수 omrZoom은 거짓이고, 참거짓이다.
+전역 변수 omrCX는 1043.0이고, 실수이다.
+전역 변수 omrCY는 367.0이고, 실수이다.
+전역 변수 omrAt은 0.0이고, 실수이다.
+
+함수 색은 (v: 자연수)를 받아
+    색상RGB((v >> 16) & 255, (v >> 8) & 255, v & 255)를 색상으로 반환한다.
+함수 알파색은 (v: 자연수, a: 실수)를 받아
+    색상RGBA((v >> 16) & 255, (v >> 8) & 255, v & 255, 자연수(제한(a * 255.0, 0.0, 255.0)))를 색상으로 반환한다.
+함수 그림영역은 (x: 실수, y: 실수, w: 실수, h: 실수)를 받아
+    사각형만들기(정수(x * scale + tx), 정수(y * scale + ty), 자연수(제한(w * scale, 0.0, 100000.0)), 자연수(제한(h * scale, 0.0, 100000.0)))를 사각형으로 반환한다.
+함수 사각은 (x: 실수, y: 실수, w: 실수, h: 실수, col: 색상)를 받아
+    G는 그래픽사각형채우기(G, 그림영역(x, y, w, h), col)이다.
+함수 둥근상자는 (x: 실수, y: 실수, w: 실수, h: 실수, r: 실수, col: 색상)를 받아
+    만약 w <= 0.0 또는 h <= 0.0이면
+        반환한다.
+    G는 그래픽둥근사각형채우기(G, 그림영역(x, y, w, h), 자연수(제한(r * scale, 0.0, 100000.0)), col)이다.
+함수 테두리는 (x: 실수, y: 실수, w: 실수, h: 실수, width: 실수, col: 색상)를 받아
+    G는 그래픽사각형테두리그리기(G, 그림영역(x, y, w, h), 자연수(제한(width * scale, 1.0, 100.0)), col)이다.
+함수 선은 (x1: 실수, y1: 실수, x2: 실수, y2: 실수, width: 실수, col: 색상)를 받아
+    G는 그래픽선분그리기(G, 정수(x1 * scale + tx), 정수(y1 * scale + ty), 정수(x2 * scale + tx), 정수(y2 * scale + ty), 자연수(제한(width * scale, 1.0, 100.0)), col)이다.
+구조체 점2의
+    변수 x는 실수이고,
+    변수 y는 실수이다.
+구조체 점3의
+    변수 x는 실수이고,
+    변수 y는 실수이고,
+    변수 z는 실수이다.
+함수 다각형은 (pts: 점2의 배열, fill: 참거짓, width: 실수, col: 색상)를 받아
+    만약 pts.길이 < 2이면
+        반환한다.
+    만약 fill == 거짓이면
+        변수 i는 1이다.
+        i < 정수(pts.길이)일 동안
+            선(pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y, width, col).
+            i는 i + 1이다.
+        반환한다.
+    # 가까운 평면으로 잘린 벽은 수만 픽셀 밖에 투영된다. 래스터화 전에
+    # 실제 캔버스 클립으로 잘라 화면 밖 스캔라인을 방문하지 않는다.
+    변수 clipped는 점2의 배열이다.
+    pts의 각 p에 대해
+        clipped에 점2(x: p.x * scale + tx, y: p.y * scale + ty)를 추가한다.
+    상수 bounds는 그래픽클립영역(G, 사각형만들기(0, 0, 그래픽너비(G), 그래픽높이(G)))이다.
+    상수 mins는 [실수(bounds.x), 실수(bounds.x + 정수(bounds.너비)), 실수(bounds.y), 실수(bounds.y + 정수(bounds.높이))]이고, 실수 4개의 고정배열이다.
+    변수 edge는 0이다.
+    edge < 4 그리고 clipped.길이 > 0일 동안
+        변수 next는 점2의 배열이다.
+        변수 i는 0이다.
+        i < 정수(clipped.길이)일 동안
+            상수 a는 clipped[i]이다.
+            상수 b는 clipped[(i + 1) % 정수(clipped.길이)]이다.
+            변수 av는 a.x이다.
+            변수 bv는 b.x이다.
+            만약 edge >= 2이면
+                av는 a.y이다.
+                bv는 b.y이다.
+            변수 ain는 av >= mins[edge]이다.
+            변수 bin는 bv >= mins[edge]이다.
+            만약 edge % 2 == 1이면
+                ain는 av <= mins[edge]이다.
+                bin는 bv <= mins[edge]이다.
+            만약 ain이면
+                next에 a를 추가한다.
+            만약 ain != bin이면
+                상수 k는 (mins[edge] - av) / (bv - av)이다.
+                next에 점2(x: 보간(a.x, b.x, k), y: 보간(a.y, b.y, k))를 추가한다.
+            i는 i + 1이다.
+        clipped는 next이다.
+        edge는 edge + 1이다.
+    만약 clipped.길이 < 3이면
+        반환한다.
+    변수 path는 빈도형()이고, 도형이다.
+    변수 i는 0이다.
+    clipped의 각 p에 대해
+        만약 i == 0이면
+            path는 도형이동(path, 정수(p.x), 정수(p.y))이다.
+        아니면
+            path는 도형선(path, 정수(p.x), 정수(p.y))이다.
+        i는 i + 1이다.
+    path는 도형닫기(path)이다.
+    G는 도형채우기그리기(G, path, 0, 0, col)이다.
+함수 타원은 (x: 실수, y: 실수, rx: 실수, ry: 실수, rot: 실수, fill: 참거짓, width: 실수, col: 색상)를 받아
+    변수 pts는 점2의 배열이다.
+    변수 i는 0이다.
+    i <= 40일 동안
+        상수 a는 실수(i) / 40.0 * TAU이다.
+        상수 dx는 코사인(a) * rx이다.
+        상수 dy는 사인(a) * ry이다.
+        pts에 점2(x: x + dx * 코사인(rot) - dy * 사인(rot), y: y + dx * 사인(rot) + dy * 코사인(rot))를 추가한다.
+        i는 i + 1이다.
+    다각형(pts, fill, width, col).
+함수 글꼴은 (size: 실수)를 받아
+    상수 n는 정수(제한(size * scale, 6.0, 100.0))이다.
+    상수 key는 n + fontWeight * 1000이다.
+    변수 i는 0이다.
+    i < 정수(fontSizes.길이)일 동안
+        만약 fontSizes[i] == key이면
+            fonts[i]를 폰트로 반환한다.
+        i는 i + 1이다.
+    변수 path는 "fonts/NotoSansKR.ttf"이다.
+    만약 fontWeight >= 700이면
+        path는 "fonts/NotoSansKR-Bold.ttf"이다.
+    상수 f는 폰트열기(path, 자연수(n))이고, 폰트이다.
+    fonts에 f를 추가한다.
+    fontSizes에 key를 추가한다.
+    f를 폰트로 반환한다.
+함수 글폭은 (text: 문자열, size: 실수)를 받아
+    (실수(그래픽텍스트폭(폰트비트맵(글꼴(size)), text)) / scale)를 실수로 반환한다.
+함수 글자는 (text: 문자열, x: 실수, y: 실수, size: 실수, align: 정수, col: 색상)를 받아
+    상수 f는 글꼴(size)이다.
+    변수 xx는 x * scale + tx이다.
+    상수 width는 실수(그래픽텍스트폭(폰트비트맵(f), text))이다.
+    만약 align == 1이면
+        xx는 xx - width / 2.0이다.
+    그렇지 않고 align == 2이면
+        xx는 xx - width이다.
+    상수 yy는 y * scale + ty - 실수(폰트래스터기준선(f))이다.
+    # 이동은 부호를 보존한다. 좌상단 밖의 글자도 클립된다.
+    변수 moved는 그래픽이동지정(G, 정수(xx), 정수(yy))이고, 그래픽이다.
+    moved는 그래픽텍스트그리기(moved, 폰트비트맵(f), text, 0, 0, col)이다.
+    G는 그래픽이동복원(moved, G)이다.
+함수 칩은 (text: 문자열, x: 실수, y: 실수, size: 실수, align: 정수, fg: 색상, bg: 색상)를 받아
+    상수 h는 28.0 * US이다.
+    상수 w는 글폭(text, size * US) + 20.0 * US이다.
+    변수 xx는 x이다.
+    만약 align == 1이면
+        xx는 x - w / 2.0이다.
+    그렇지 않고 align == 2이면
+        xx는 x - w이다.
+    둥근상자(xx, y, w, h, 6.0, bg).
+    글자(text, xx + 10.0 * US, y + h / 2.0 + size * US * 0.36, size * US, 0, fg).
+함수 안에있는가는 (x: 실수, y: 실수, bx: 실수, by: 실수, bw: 실수, bh: 실수)를 받아
+    (x >= bx 그리고 x <= bx + bw 그리고 y >= by 그리고 y <= by + bh)를 참거짓으로 반환한다.
+
+함수 카메라좌표는 (p: 점3, yaw: 실수)를 받아
+    상수 dx는 p.x - 0.22이다.
+    상수 dz는 p.z + 0.1이다.
+    점3(x: dx * 코사인(yaw) - dz * 사인(yaw), y: p.y - 1.2, z: dx * 사인(yaw) + dz * 코사인(yaw))를 점3으로 반환한다.
+함수 투영은 (p: 점3)를 받아
+    점2(x: 640.0 + 760.0 * p.x / p.z, y: 300.0 - 760.0 * p.y / p.z)를 점2로 반환한다.
+함수 면3은 (pts: 점3의 배열, yaw: 실수, fill: 색상, stroke: 참거짓, col: 색상)를 받아
+    변수 cam는 점3의 배열이다.
+    pts의 각 p에 대해
+        cam에 카메라좌표(p, yaw)를 추가한다.
+    변수 clipped는 점2의 배열이다.
+    변수 i는 0이다.
+    i < 정수(cam.길이)일 동안
+        상수 a는 cam[i]이다.
+        상수 b는 cam[(i + 1) % 정수(cam.길이)]이다.
+        만약 a.z >= 0.12이면
+            clipped에 투영(a)를 추가한다.
+        만약 (a.z >= 0.12) != (b.z >= 0.12)이면
+            상수 k는 (0.12 - a.z) / (b.z - a.z)이다.
+            clipped에 투영(점3(x: 보간(a.x, b.x, k), y: 보간(a.y, b.y, k), z: 0.12))를 추가한다.
+        i는 i + 1이다.
+    만약 clipped.길이 >= 3이면
+        다각형(clipped, 참, 1.0, fill).
+        만약 stroke이면
+            clipped에 clipped[0]를 추가한다.
+            다각형(clipped, 거짓, 1.5, col).
+함수 선3은 (a: 점3, b: 점3, yaw: 실수, width: 실수, col: 색상)를 받아
+    변수 aa는 카메라좌표(a, yaw)이다.
+    변수 bb는 카메라좌표(b, yaw)이다.
+    만약 aa.z < 0.12 그리고 bb.z < 0.12이면
+        반환한다.
+    만약 aa.z < 0.12이면
+        상수 k는 (0.12 - aa.z) / (bb.z - aa.z)이다.
+        aa는 점3(x: 보간(aa.x, bb.x, k), y: 보간(aa.y, bb.y, k), z: 0.12)이다.
+    그렇지 않고 bb.z < 0.12이면
+        상수 k는 (0.12 - bb.z) / (aa.z - bb.z)이다.
+        bb는 점3(x: 보간(bb.x, aa.x, k), y: 보간(bb.y, aa.y, k), z: 0.12)이다.
+    상수 p는 투영(aa)이다.
+    상수 q는 투영(bb)이다.
+    선(p.x, p.y, q.x, q.y, width, col).
+
+함수 굵은글자는 (text: 문자열, x: 실수, y: 실수, size: 실수, align: 정수, col: 색상)를 받아
+    상수 old는 fontWeight이다.
+    fontWeight는 800이다.
+    글자(text, x, y, size, align, col).
+    fontWeight는 old이다.

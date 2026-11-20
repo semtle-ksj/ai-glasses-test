@@ -1,0 +1,126 @@
+외부 함수 ninja_is_touch는 정수로 반환한다.
+외부 함수 ninja_configure_window는 받지 않는다.
+전역 변수 회전대기중은 거짓이고, 참거짓이다.
+전역 변수 canvasWidth는 1280.0이고, 실수이다.
+전역 변수 canvasHeight는 720.0이고, 실수이다.
+함수 게임뷰는 (view: 정수)를 받아
+    만약 view == 3이면
+        책상화면을 실행한다.
+    아니면
+        변수 yaw는 0.0이다.
+        만약 view == 1이면
+            yaw는 1.05이다.
+        그렇지 않고 view == 2이면
+            yaw는 -1.05이다.
+        교실그리기(run.clock, yaw).
+함수 화면그리기는 (g: 그래픽, 영역: 사각형)를 받아
+    G는 그래픽사각형채우기(g, 영역, 색(0x0b0f0d))이다.
+    scale는 제한(실수(영역.너비) / 1280.0, 0.01, 실수(영역.높이) / 720.0)이다.
+    tx는 실수(영역.x) + (실수(영역.너비) - 1280.0 * scale) / 2.0이다.
+    ty는 실수(영역.y) + (실수(영역.높이) - 720.0 * scale) / 2.0이다.
+    canvasWidth는 실수(영역.너비)이다.
+    canvasHeight는 실수(영역.높이)이다.
+    US는 제한(0.9 / scale, 1.0, 2.2)이다.
+    만약 touchMode 그리고 canvasHeight > canvasWidth이면
+        scale는 1.0이다.
+        tx는 실수(영역.x)이다.
+        ty는 실수(영역.y)이다.
+        글자("가로로 돌려 주세요", canvasWidth / 2.0, canvasHeight / 2.0 - 12.0, 24.0, 1, 색(0xeaefe4)).
+        만약 run.phase == 2이면
+            글자("시험 시간 일시 정지", canvasWidth / 2.0, canvasHeight / 2.0 + 22.0, 15.0, 1, 색(0xa3b0a6)).
+        G를 그래픽으로 반환한다.
+    만약 run.phase == 0이면
+        교실그리기(run.clock, 0.0).
+        메뉴그리기를 실행한다.
+    아니면
+        상수 progress는 진행(run.clock, run.viewChangeAt, run.viewChangeAt + 0.2)이다.
+        만약 progress < 1.0 그리고 run.viewPrev != run.view이면
+            상수 e는 부드럽게(progress)이다.
+            상수 savedTX는 tx이다.
+            상수 savedTY는 ty이다.
+            만약 run.viewPrev == 3 또는 run.view == 3이면
+                변수 dir는 -1.0이다.
+                만약 run.view == 3이면
+                    dir는 1.0이다.
+                ty는 savedTY - dir * 720.0 * e * scale이다.
+                게임뷰(run.viewPrev).
+                ty는 savedTY + dir * 720.0 * (1.0 - e) * scale이다.
+                게임뷰(run.view).
+            아니면
+                변수 dir는 1.0이다.
+                상수 yaws는 [0.0, 1.05, -1.05, 0.0]이고, 실수 4개의 고정배열이다.
+                만약 yaws[run.view] < yaws[run.viewPrev]이면
+                    dir는 -1.0이다.
+                tx는 savedTX - dir * 1280.0 * e * scale이다.
+                게임뷰(run.viewPrev).
+                tx는 savedTX + dir * 1280.0 * (1.0 - e) * scale이다.
+                게임뷰(run.view).
+            tx는 savedTX이다.
+            ty는 savedTY이다.
+        아니면
+            게임뷰(run.view).
+        화면정보를 실행한다.
+        만약 run.phase == 5이면
+            결과화면을 실행한다.
+        아니면
+            소리버튼그리기를 실행한다.
+    G를 그래픽으로 반환한다.
+화면 게임화면의
+    추적 대상 tick은 자연수(0)이고, 자연수이다.
+    비동기 작업은
+        touchMode는 ninja_is_touch() > 0이다.
+        ninja_configure_window().
+        새경기(7, 0).
+        run.phase는 0이다.
+        run.proctor는 새감독관()이다.
+        run.sounds는 []이다.
+        변수 last는 현재밀리초()이다.
+        참일 동안
+            상수 now는 현재밀리초()이다.
+            상수 dt는 제한(실수(now - last) / 1000.0, 0.0, 시험시간 + 12.0)이다.
+            last는 now이다.
+            만약 touchMode 그리고 canvasHeight > canvasWidth이면
+                노출취소(참).
+                gestureActive는 거짓이다.
+                회전대기중은 참이다.
+            그렇지 않고 회전대기중이면
+                회전대기중은 거짓이다.
+            그렇지 않고 run.phase == 0 또는 run.phase == 5이면
+                run.clock은 run.clock + dt이다.
+                만약 run.phase == 0이면
+                    만약 감독관걷기(dt) == 1이면
+                        순회계획을 실행한다.
+            아니면
+                경기시간진행(dt).
+                길게누르기갱신을 실행한다.
+            소리사건처리를 실행한다.
+            tick은 tick + 1이다.
+            16밀리초 기다린다.
+    A키를 누르면
+        보기설정(2).
+    W키를 누르면
+        보기설정(0).
+    D키를 누르면
+        보기설정(1).
+    S키를 누르면
+        보기설정(3).
+    Q키를 누르면
+        쪽넘기기(-1).
+    E키를 누르면
+        쪽넘기기(1).
+    M키를 누르면
+        muted는 muted == 거짓이다.
+        소리음소거(muted).
+    그리는 내용은
+        캔버스의
+            너비는 가능한 최대이고,
+            높이는 가능한 최대이고,
+            갱신키는 tick이고,
+            그리기는 그래픽과 영역을 받아
+                그래픽은 화면그리기(그래픽, 영역)이다.
+            포인터 입력은 표본을 받아
+                포인터처리(표본).
+                tick은 tick + 1이다.
+화면을 표시하는 함수 앱시작은
+    그리는 내용은
+        게임화면이다.

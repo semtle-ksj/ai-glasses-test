@@ -1,0 +1,76 @@
+프로젝트 중급닌자시험의
+    버전은 "0.1.0"이다.
+모듈 NinjaGame의
+    원본 경로는 "build/Generated"이고,
+    자원 경로는 "Resources"이고,
+    외부 구현은 NinjaPlatform이고,
+    의존 라이브러리는
+        기반과,
+        HmjeUI이다.
+앱 중급닌자시험의
+    시작 모듈은 NinjaGame이고,
+    지원 플랫폼은
+        macOS 14 이상과,
+        Windows 10 이상과,
+        iOS 17 이상과,
+        Android 26 이상이다.
+중급닌자시험 앱의 macOS 설정의
+    묶음 식별자는 "net.semtle.ninja-test"이고,
+    표시 이름은 "중급닌자시험"이다.
+중급닌자시험 앱의 Windows 설정의
+    묶음 식별자는 "net.semtle.ninja-test"이고,
+    표시 이름은 "중급닌자시험"이다.
+중급닌자시험 앱의 iOS 설정의
+    묶음 식별자는 "net.semtle.ninja-test"이고,
+    표시 이름은 "중급닌자시험"이다.
+중급닌자시험 앱의 Android 설정의
+    묶음 식별자는 "net.semtle.ninjatest"이고,
+    표시 이름은 "중급닌자시험"이다.
+외부 구현 NinjaPlatform의
+    원본 경로는 "Native"이다.
+    macOS 설정의
+        원본 파일은
+            "audio_apple.m"와,
+            "apple.m"이고,
+        시스템 프레임워크는
+            Foundation과,
+            AppKit과,
+            AVFoundation과,
+            AudioToolbox과,
+            CoreAudio과,
+            CoreGraphics과,
+            ImageIO과,
+            UniformTypeIdentifiers이다.
+    iOS 설정의
+        원본 파일은
+            "audio_apple.m"와,
+            "apple.m"이고,
+        시스템 프레임워크는
+            Foundation과,
+            UIKit과,
+            AVFoundation과,
+            AudioToolbox과,
+            CoreAudio과,
+            CoreGraphics과,
+            ImageIO과,
+            UniformTypeIdentifiers이다.
+    Windows 설정의
+        원본 파일은
+            "audio.c"와,
+            "windows.cpp"이고,
+        시스템 라이브러리는
+            ole32와,
+            sapi와,
+            uuid와,
+            windowscodecs와,
+            comdlg32이다.
+    Android 설정의
+        원본 파일은
+            "audio.c"와,
+            "android.c"와,
+            "NinjaPlatform.java"와,
+            "dependencies.android.lock.json"이고,
+        시스템 라이브러리는
+            aaudio와,
+            log와,
+            android이다.

@@ -1,0 +1,149 @@
+외부 함수 ninja_audio_open은 정수로 반환한다.
+외부 함수 ninja_audio_play는 (data: 주소, frames: 자연수, delay: 실수, pan: 실수)를 받아 정수로 반환한다.
+외부 함수 ninja_audio_mute는 (value: 정수)를 받는다.
+외부 함수 ninja_audio_stop은 받지 않는다.
+외부 함수 ninja_speech_ready는 정수로 반환한다.
+외부 함수 ninja_speech는 (text: 주소, length: 자연수, rate: 실수, pitch: 실수, volume: 실수, interrupt: 정수)를 받아 정수로 반환한다.
+외부 함수 ninja_speech_stop은 받지 않는다.
+전역 변수 audioReady는 거짓이고, 참거짓이다.
+전역 변수 noiseBuffer는 실수의 배열이다.
+전역 변수 noiseRNG는 자연수(6323587)이다.
+함수 소리난수는
+    noiseRNG는 (noiseRNG * 1664525 + 1013904223) & 자연수(0xffffffff)이다.
+    (실수(noiseRNG) / 4294967296.0)를 실수로 반환한다.
+함수 소리준비는
+    만약 audioReady이면
+        반환한다.
+    audioReady는 ninja_audio_open() > 0이다.
+    상수 voiceReady는 ninja_speech_ready()이다.
+    만약 noiseBuffer.길이 == 0이면
+        변수 i는 0이다.
+        i < 96000일 동안
+            noiseBuffer에 소리난수() * 2.0 - 1.0를 추가한다.
+            i는 i + 1이다.
+함수 음성가능은
+    (ninja_speech_ready() > 0)을 참거짓으로 반환한다.
+함수 소리음소거는 (value: 참거짓)를 받아
+    변수 flag는 0이다.
+    만약 value이면
+        flag는 1이다.
+        ninja_speech_stop().
+    ninja_audio_mute(flag).
+함수 소리전체중지는
+    ninja_audio_stop().
+    ninja_speech_stop().
+함수 합성소리는 (kind: 정수, freq: 실수, len: 실수, vol: 실수, delay: 실수, wave: 정수, pan: 실수, q: 실수)를 받아
+    만약 audioReady == 거짓 또는 muted이면
+        반환한다.
+    상수 frames는 정수((len + 0.05) * 48000.0)이다.
+    변수 pcm는 실수32의 배열이다.
+    변수 rise는 0.02이다.
+    만약 kind == 1 또는 kind == 2이면
+        rise는 제한(len / 3.0, 0.0, 0.01)이다.
+    만약 kind == 3이면
+        rise는 0.075이다.
+    상수 growth는 거듭제곱(vol / 0.0001, 1.0 / (rise * 48000.0))이다.
+    상수 decay는 거듭제곱(0.0001 / vol, 1.0 / ((len - rise) * 48000.0))이다.
+    변수 amp는 0.0001이다.
+    변수 phase는 0.0이다.
+    상수 omega는 TAU * freq / 48000.0이다.
+    상수 alpha는 사인(omega) / (2.0 * q)이다.
+    상수 a0는 1.0 + alpha이다.
+    변수 b0는 alpha / a0이다.
+    변수 b1는 0.0이다.
+    변수 b2는 0.0 - b0이다.
+    만약 kind == 2이면
+        b0는 (1.0 + 코사인(omega)) / (2.0 * a0)이다.
+        b1는 0.0 - (1.0 + 코사인(omega)) / a0이다.
+        b2는 b0이다.
+    상수 a1는 0.0 - 2.0 * 코사인(omega) / a0이다.
+    상수 a2는 (1.0 - alpha) / a0이다.
+    변수 x1는 0.0이다.
+    변수 x2는 0.0이다.
+    변수 y1는 0.0이다.
+    변수 y2는 0.0이다.
+    상수 noiseStart는 정수(소리난수() * 48000.0)이다.
+    변수 i는 0이다.
+    i < frames일 동안
+        상수 t는 실수(i) / 48000.0이다.
+        만약 t < rise이면
+            amp는 amp * growth이다.
+        아니면
+            amp는 amp * decay이다.
+        변수 v는 사인(phase)이다.
+        만약 wave == 1이면
+            v는 1.0이다.
+            만약 사인(phase) < 0.0이면
+                v는 -1.0이다.
+        그렇지 않고 wave == 2이면
+            v는 아크사인(사인(phase)) * 2.0 / PI이다.
+        만약 kind == 1 또는 kind == 2이면
+            상수 x는 noiseBuffer[(noiseStart + i) % 96000]이다.
+            v는 b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2이다.
+            x2는 x1이다.
+            x1는 x이다.
+            y2는 y1이다.
+            y1는 v이다.
+        pcm에 실수32(v * amp)를 추가한다.
+        변수 step는 omega이다.
+        만약 kind == 3이면
+            step는 TAU * 보간(470.0, 760.0, 제한(t / 0.23, 0.0, 1.0)) / 48000.0이다.
+        phase는 phase + step이다.
+        만약 phase > TAU이면
+            phase는 phase - TAU이다.
+        i는 i + 1이다.
+    상수 played는 ninja_audio_play(pcm.데이터, 자연수(frames), delay, pan)이다.
+함수 소리사건처리는
+    상수 events는 run.sounds이다.
+    run.sounds는 []이다.
+    events의 각 e에 대해
+        만약 e.kind >= 20이면
+            만약 e.kind == 21이면
+                ninja_speech_stop().
+            그렇지 않고 e.kind == 22이면
+                소리전체중지를 실행한다.
+            그렇지 않고 muted == 거짓이면
+                변수 rate는 1.0이다.
+                변수 pitch는 0.82이다.
+                만약 e.kind == 23이면
+                    rate는 1.12이다.
+                    pitch는 1.08이다.
+                상수 spoken는 ninja_speech(e.text.주소, e.text.길이, rate, pitch, e.volume, 0)이다.
+        그렇지 않고 e.kind == 0이면
+            합성소리(1, 260.0, 0.09, 0.5 * e.volume, 0.0, 0, e.pan, 1.2).
+            합성소리(0, 95.0, 0.08, 0.25 * e.volume, 0.0, 0, e.pan, 1.0).
+        그렇지 않고 e.kind == 1이면
+            상수 n는 2 + 정수(소리난수() * 3.0)이다.
+            변수 i는 0이다.
+            i < n일 동안
+                합성소리(1, 3800.0 + 소리난수() * 1500.0, 0.05, 0.12 * e.volume, 실수(i) * 0.07, 0, e.pan, 2.5).
+                i는 i + 1이다.
+        그렇지 않고 e.kind == 2이면
+            합성소리(2, 1700.0, 0.32, 0.22 * e.volume, 0.0, 0, e.pan, 0.6).
+        그렇지 않고 e.kind == 3 또는 e.kind == 4이면
+            상수 start는 [659.0, 523.0, 587.0, 392.0]이고, 실수 4개의 고정배열이다.
+            상수 end는 [392.0, 587.0, 523.0, 659.0]이고, 실수 4개의 고정배열이다.
+            변수 i는 0이다.
+            i < 4일 동안
+                변수 f는 start[i]이다.
+                만약 e.kind == 4이면
+                    f는 end[i]이다.
+                합성소리(0, f, 0.9, 0.07, 실수(i) * 0.55, 0, 0.0, 1.0).
+                i는 i + 1이다.
+        그렇지 않고 e.kind == 5이면
+            변수 i는 0이다.
+            i < 8일 동안
+                합성소리(3, 470.0, 0.44, 0.09, 실수(i) * 0.52, 2, 0.0, 1.0).
+                i는 i + 1이다.
+        그렇지 않고 e.kind == 6이면
+            만약 e.volume == 0.0이면
+                합성소리(0, 1900.0, 0.05, 0.03, 0.0, 1, 0.0, 1.0).
+            아니면
+                합성소리(1, 2500.0, 0.03, 0.25, 0.0, 0, 0.0, 1.0).
+                합성소리(1, 1800.0, 0.03, 0.18, 0.05, 0, 0.0, 1.0).
+        그렇지 않고 e.kind == 7이면
+            합성소리(0, 1320.0, 0.06, 0.05, 0.0, 0, 0.6, 1.0).
+        그렇지 않고 e.kind == 8이면
+            합성소리(0, 260.0, 0.12, 0.04, 0.0, 0, 0.0, 1.0).
+        그렇지 않고 e.kind == 9이면
+            합성소리(1, 2600.0, 0.08, 0.15, 0.0, 0, 0.0, 1.5).

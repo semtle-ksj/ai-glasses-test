@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>중급닌자시험</title>
+<link rel="canonical" href="https://chunin-exam.pages.dev/">
+<link rel="preload" as="image" href="share-art.jpg">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="중급닌자시험">
+<meta property="og:description" content="감독관 몰래 AI 장비로 수학 8문항을 풀어라. 제한시간 2분.">
+<meta property="og:url" content="https://chunin-exam.pages.dev/">
+<meta property="og:image" content="https://chunin-exam.pages.dev/share-cover.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="AI 안경과 시험지가 그려진 중급닌자시험 포스터">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="share.css">
+<style>
+  * { box-sizing: border-box }
+  body {
+    margin: 0; height: 100vh; height: 100dvh; overflow: hidden;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background: #101613; color: white; font: 16px system-ui;
+  }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none }
+  output { position: fixed; inset: 48% 0 auto; text-align: center; pointer-events: none }
+</style>
+<canvas aria-label="시험실 화면"></canvas>
+<output>시험장 여는 중…</output>
+<dialog id="share-sheet" aria-labelledby="share-heading">
+  <header>
+    <h2 id="share-heading">결과 공유</h2>
+    <form method="dialog"><button aria-label="닫기" autofocus>×</button></form>
+  </header>
+  <div class="share-body">
+    <img id="share-preview" alt="내 시험 결과 카드" width="1200" height="630">
+    <div class="share-details">
+      <p id="share-caption"></p>
+      <a id="share-address" href="https://chunin-exam.pages.dev/">chunin-exam.pages.dev</a>
+      <div class="share-actions">
+        <button id="share-send" type="button">공유하기</button>
+        <button id="share-copy" type="button">결과와 링크 복사</button>
+        <a id="share-save" download="중급닌자시험-결과.png">이미지 저장</a>
+      </div>
+      <p id="share-status" role="status"></p>
+      <textarea id="share-manual" aria-label="복사할 결과와 링크" rows="3" readonly hidden></textarea>
+    </div>
+  </div>
+</dialog>
+<script defer src="share.js"></script>
+<script defer src="app.js"></script>
+</html>

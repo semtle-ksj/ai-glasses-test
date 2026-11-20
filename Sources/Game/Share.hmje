@@ -1,0 +1,28 @@
+외부 함수 ninja_result는 (pixels: 주소, length: 자연수, width: 정수, height: 정수, text: 주소, textLength: 자연수, save: 정수)를 받아 정수로 반환한다.
+함수 결과내보내기는 (save: 정수)를 받아
+    상수 oldG는 G이다.
+    상수 oldScale는 scale이다.
+    상수 oldTX는 tx이다.
+    상수 oldTY는 ty이다.
+    G는 그래픽만들기(1200, 630)이다.
+    scale는 1.0이다.
+    tx는 0.0이다.
+    ty는 0.0이다.
+    결과카드그리기를 실행한다.
+    상수 pixels는 그래픽픽셀바이트들(G)이고, 자연수8의 배열이다.
+    상수 text는 결과문구()이다.
+    상수 result는 ninja_result(pixels.데이터, pixels.길이, 1200, 630, text.주소, text.길이, save)이다.
+    그래픽해제를 (G)로 실행한다.
+    G는 oldG이다.
+    scale는 oldScale이다.
+    tx는 oldTX이다.
+    ty는 oldTY이다.
+    resultMessage는 ""이다.
+    만약 result <= 0이면
+        상수 copied는 클립보드텍스트쓰기(text)이다.
+        만약 copied > 0이면
+            resultMessage는 "결과 문구를 복사했습니다."이다.
+함수 결과공유는
+    결과내보내기(0).
+함수 결과저장은
+    결과내보내기(1).

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "roots": [
+    "net.semtle:ninja-provider:1.0"
+  ],
+  "artifacts": [
+    {
+      "id": "net.semtle:ninja-provider:1.0",
+      "type": "aar",
+      "path": "ninja-provider.aar",
+      "sha256": "e41eedd32780a0629b67ab5472d378b6348707f4e372dcea5a958ca81d97263f",
+      "dependencies": []
+    }
+  ]
+}

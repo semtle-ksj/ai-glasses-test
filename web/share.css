@@ -1,0 +1,47 @@
+#share-sheet {
+  box-sizing: border-box;
+  width: min(860px, calc(100% - 24px));
+  max-width: none;
+  max-height: calc(100dvh - 20px);
+  padding: 18px 20px 20px;
+  border: 1px solid #44503e;
+  border-radius: 14px;
+  background: #121b15;
+  color: #f2f3e7;
+  color-scheme: dark;
+  font-family: inherit;
+  overflow: auto;
+}
+#share-sheet::backdrop { background: rgb(4 8 5 / 82%); }
+#share-sheet header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+#share-sheet h2 { margin: 0; font-size: 20px; }
+#share-sheet header button {
+  width: 44px; height: 44px; background: transparent; border: 0; color: #e9eee0;
+  font-size: 28px; line-height: 1; cursor: pointer;
+}
+.share-body { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(182px, 1fr); gap: 20px; align-items: center; }
+#share-preview { width: 100%; height: auto; border-radius: 6px; }
+.share-details { min-width: 0; }
+#share-caption { white-space: pre-line; font-size: 16px; line-height: 1.55; font-weight: 650; margin: 0 0 4px; }
+#share-address { color: #c1d3b5; font-size: 14px; text-underline-offset: 3px; }
+.share-actions { display: grid; gap: 6px; margin-top: 15px; }
+.share-actions button, .share-actions a {
+  display: grid; place-items: center; min-height: 44px; padding: 5px 9px; text-decoration: none;
+  border: 1px solid #55624f; border-radius: 7px; background: #202d23; color: #f4f6e9;
+  font: inherit; font-size: 14px; font-weight: 650; cursor: pointer;
+}
+#share-send, #share-send[hidden] + #share-copy { background: #d4ed84; color: #18210c; border-color: #d4ed84; }
+.share-actions button:disabled, #share-save:not([href]) { opacity: .5; pointer-events: none; }
+#share-sheet [hidden] { display: none; }
+#share-sheet :focus-visible { outline: 2px solid #dcf798; outline-offset: 2px; }
+#share-status { margin: 7px 0 0; color: #d4ed84; font-size: 13px; }
+#share-status:empty { display: none; }
+#share-manual { width: 100%; margin-top: 8px; }
+@media (max-width: 560px) and (orientation: portrait) {
+  .share-body { grid-template-columns: 1fr; gap: 14px; }
+  #share-sheet { padding: 14px; }
+}
+@media (max-height: 430px) {
+  #share-sheet { padding: 8px 14px 12px; }
+  #share-sheet header { margin-bottom: 4px; }
+}
